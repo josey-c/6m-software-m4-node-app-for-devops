@@ -5,13 +5,19 @@ jobs:
   build:
     docker:
       - image: cimg/node:16.10
+
+      - image: docker:stable
+
     steps:
       - checkout
+      - setup_remote_docker
       - node/install-packages:
           pkg-manager: npm
       - run: |
           echo "Installing dependencies..."
           npm install
+          echo "Building docker image..."
+          docker build --tag node-app .
   test:
     docker:
       - image: cimg/node:16.10
@@ -22,18 +28,6 @@ jobs:
       - run: |
           echo "Running tests..."
           npm run test
-  build:
-    docker:
-      - image: cimg/node:16.10
-    steps:
-      - checkout
-
-      - setup_remote_docker
-
-      - run: |
-          echo "Building docker image..."
-          docker build --tag node-app .
-
 
 workflows:
   simple_workflow:
