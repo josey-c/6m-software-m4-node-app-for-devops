@@ -22,11 +22,12 @@ jobs:
       - run: |
           echo "Running tests..."
           npm run test
-  pushdocker:
+  build:
     docker:
       - image: cimg/node:16.10
     steps:
       - checkout
+
       - setup_remote_docker
 
       - run: |
