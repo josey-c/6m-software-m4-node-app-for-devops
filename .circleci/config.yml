@@ -22,6 +22,18 @@ jobs:
       - run: |
           echo "Running tests..."
           npm run test
+  
+  push-docker:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run: |
+          echo "Building docker image..."
+          docker build --tag node-app . 
+
 
 workflows:
   simple_workflow:
