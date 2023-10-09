@@ -31,7 +31,7 @@ jobs:
 
       - run: |
           echo "Building docker image..."
-          docker build --tag node-app . 
+          docker build --tag node-app .
 
 
 workflows:
