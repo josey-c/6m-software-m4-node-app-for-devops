@@ -1,6 +1,16 @@
 version: 2.1
 orbs:
   node: circleci/node@5.0.1
+executors:
+  docker-publisher:
+    environment: 
+      IMAGE_TAG: joseyc/node-app:latest
+    docker: 
+      - image: docker:stable
+    auth:
+      username: joseyc
+      password: dckr_pat_plR1O_kHHZEGHE1fywFKBhw3kGc
+      
 jobs:
   build:
     docker:
@@ -22,16 +32,17 @@ jobs:
       - run: |
           echo "Running tests..."
           npm run test
-  build-docker-image:
+  publish-docker-hub:
     docker:
       - image: docker:stable
     steps:
       - checkout
       - setup_remote_docker
       - run: |
-          echo "Building docker image..."
-          docker build --tag node-app .
-
+          echo “$DOCKERHUB_PASSWORD” | docker login -u “$DOCKERHUB_USERNAME” — password-stdin
+          docker build -t "${IMAGE_TAG}" .
+          docker push "${IMAGE_TAG}"
+  
 workflows:
   simple_workflow:
     jobs:
@@ -39,6 +50,6 @@ workflows:
       - test:
           requires:
             - build
-      - build-docker-image:
+      - publish-docker-hub:
           requires:
             - test
