@@ -22,8 +22,7 @@ jobs:
       - run: |
           echo "Running tests..."
           npm run test
-  
-  push-docker:
+  pushdocker:
     docker:
       - image: cimg/node:16.10
     steps:
