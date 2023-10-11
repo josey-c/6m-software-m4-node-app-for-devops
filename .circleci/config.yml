@@ -4,11 +4,6 @@ orbs:
   docker: circleci/docker@2.1.4 #To able to use docker commands
   heroku: circleci/heroku@2.0.0 #Allow us to use heroku orb's commands
 
-# parameters:
-#   git.tag:
-#     type: string
-
-
 jobs:
   build:
     docker:
