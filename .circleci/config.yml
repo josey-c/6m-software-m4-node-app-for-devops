@@ -68,10 +68,10 @@ workflows:
             - build
       - build-and-push:
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/
-            # branches:
-            #   ignore: /.*/
       - deploy:
           requires:
             - build-and-push 
