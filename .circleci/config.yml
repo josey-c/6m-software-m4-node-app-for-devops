@@ -38,6 +38,7 @@ jobs:
       - docker/push:
           image: joseyc/node-app
           tag: << pipeline.git.tag >>
+      - run: echo "<< pipeline.git.tag >>"
 
   deploy:
     docker:
@@ -63,8 +64,6 @@ workflows:
               branches:
                 only:
                   - main
-              tags:
-                ignore: /.*/
       - test:
           requires:
             - build
