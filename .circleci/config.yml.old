@@ -1,0 +1,52 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.0.1
+
+executors:
+  docker-publisher:
+    environment: 
+      IMAGE_TAG: joseyc/node-app:latest
+    docker: 
+      - image: docker:stable
+      
+jobs:
+  build:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run: |
+          echo "Installing dependencies..."
+          npm install
+  test:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run: |
+          echo "Running tests..."
+          npm run test
+  publish-docker-hub:
+    executor: docker-publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: |
+          echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USERNAME}" --password-stdin
+          docker build -t "${IMAGE_TAG}" .
+          docker push "${IMAGE_TAG}"
+
+workflows:
+  simple_workflow:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - publish-docker-hub:
+          requires:
+            - test

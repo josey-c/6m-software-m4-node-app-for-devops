@@ -1,14 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@5.0.1
-
-executors:
-  docker-publisher:
-    environment: 
-      IMAGE_TAG: joseyc/node-app:latest
-    docker: 
-      - image: docker:stable
-      
+  docker: circleci/docker@2.1.4
 jobs:
   build:
     docker:
@@ -18,7 +11,7 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run: |
-          echo "Installing dependencies..."
+          echo Installing dependencies...”
           npm install
   test:
     docker:
@@ -28,17 +21,33 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run: |
-          echo "Running tests..."
+          echo “Running tests...”
           npm run test
-  publish-docker-hub:
-    executor: docker-publisher
+
+  build-and-push:
+    executor: docker/docker
     steps:
-      - checkout
       - setup_remote_docker
-      - run: |
-          echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USERNAME}" --password-stdin
-          docker build -t "${IMAGE_TAG}" .
-          docker push "${IMAGE_TAG}"
+      - checkout
+      - docker/check
+      - docker/build:
+          image: joseyc/node-app
+      - docker/push:
+          image: joseyc/node-app
+
+  # deploy:
+  #   docker:
+  #     - image: cimg/node:16.10
+  #   steps:
+  #     - setup_remote_docker
+  #     - heroku/install
+  #     - checkout
+  #     - run:
+  #         name: Heroku Container Push
+  #         command: |
+  #           heroku container:login
+  #           heroku container:push web -a joseyc-su-devops
+  #           heroku container:release web -a joseyc-su-devops
 
 workflows:
   simple_workflow:
@@ -47,6 +56,9 @@ workflows:
       - test:
           requires:
             - build
-      - publish-docker-hub:
+      - build-and-push:
           requires:
             - test
+      - deploy:
+          requires:
+            - build-and-push
