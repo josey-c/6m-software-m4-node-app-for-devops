@@ -45,7 +45,7 @@ jobs:
     steps:
       - setup_remote_docker
       - heroku/install
-      - checkout   
+      - checkout     
       - run:
           name: Heroku Container Push
           command: |
