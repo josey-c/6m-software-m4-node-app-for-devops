@@ -1,7 +1,8 @@
 version: 2.1
 orbs:
   node: circleci/node@5.0.1
-  docker: circleci/docker@2.1.4
+  docker: circleci/docker@2.1.4 #To able to use docker commands
+  heroku: circleci/heroku@2.0.0 #Allow us to use heroku orb's commands
 jobs:
   build:
     docker:
@@ -37,19 +38,21 @@ jobs:
           image: joseyc/node-app
           tag: 1.0.1
 
-  # deploy:
-  #   docker:
-  #     - image: cimg/node:16.10
-  #   steps:
-  #     - setup_remote_docker
-  #     - heroku/install
-  #     - checkout
-  #     - run:
-  #         name: Heroku Container Push
-  #         command: |
-  #           heroku container:login
-  #           heroku container:push web -a joseyc-su-devops
-  #           heroku container:release web -a joseyc-su-devops
+  deploy:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - setup_remote_docker
+      - heroku/install
+      - checkout
+      - run:
+          name: Heroku Container Push
+          command: |
+            heroku container:login
+            heroku container:push web -a joseyc-su-devops
+            heroku container:release web -a joseyc-su-devops
+          # Push image to heroku's contaienr registry
+          # Relese deploy image from heroku's container registry
 
 workflows:
   simple_workflow:
@@ -61,6 +64,6 @@ workflows:
       - build-and-push:
           requires:
             - test
-      # - deploy:
-      #     requires:
-      #       - build-and-push
+      - deploy:
+          requires:
+            - build-and-push
