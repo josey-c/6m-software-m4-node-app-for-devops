@@ -63,13 +63,15 @@ workflows:
               branches:
                 only:
                   - main
+              tags:
+                ignore: /.*/
       - test:
           requires:
             - build
       - build-and-push:
           filters:
-            branches:
-              ignore: /.*/
+            # branches:
+            #   ignore: /.*/
             tags:
               only: /^v.*/
       - deploy:
