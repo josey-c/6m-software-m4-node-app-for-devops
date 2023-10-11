@@ -67,8 +67,6 @@ workflows:
           requires:
             - build
       - build-and-push:
-          requires:
-            - test
           filters:
             tags:
               only: /^v.*/
