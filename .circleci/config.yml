@@ -24,7 +24,6 @@ jobs:
           pkg-manager: npm
       - run: |
           echo “Running tests...”
-          echo "<< pipeline.git.tag >>"
           npm run test
 
   build-and-push:
@@ -33,13 +32,14 @@ jobs:
       - setup_remote_docker
       - checkout
       - docker/check
+      - run: echo "<< pipeline.git.tag >>"
       - docker/build:
           image: joseyc/node-app
           tag: << pipeline.git.tag >>
       - docker/push:
           image: joseyc/node-app
           tag: << pipeline.git.tag >>
-      - run: echo "<< pipeline.git.tag >>"
+
 
   deploy:
     docker:
@@ -62,11 +62,11 @@ workflows:
     jobs:
       - build:
           filters:
-              # branches:
-              #   only:
-              #     - main
-              tags:
-                only: /.*/
+              branches:
+                only:
+                  - main
+              # tags:
+              #   only: /.*/
       - test:
           requires:
             - build
