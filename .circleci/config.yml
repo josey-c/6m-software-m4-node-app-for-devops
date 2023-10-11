@@ -24,6 +24,7 @@ jobs:
           pkg-manager: npm
       - run: |
           echo “Running tests...”
+          echo "<< pipeline.git.branch >>"
           npm run test
 
   build-and-push:
