@@ -83,6 +83,8 @@ workflows:
           requires:
             - build
       - build-and-push:
+          requires:
+            - test
           filters:
             # branches:
             #   ignore: /.*/ 
