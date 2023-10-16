@@ -65,8 +65,6 @@ workflows:
               branches:
                 only:
                   - main
-              # tags:
-              #   only: /.*/
       - test:
           requires:
             - build
