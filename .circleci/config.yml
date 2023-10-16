@@ -50,6 +50,7 @@ jobs:
       - run: docker build -t $IMAGE_NAME .
       - snyk/scan:
           docker-image-name: $IMAGE_NAME
+          severity-threshold: high
   # deploy:
   #   docker:
   #     - image: cimg/node:16.10
@@ -65,7 +66,6 @@ jobs:
   #           heroku container:release web -a joseyc-su-devops
           # Push image to heroku's contaienr registry
           # Relese deploy image from heroku's container registry
-
 workflows:
   simple_workflow:
     jobs:
