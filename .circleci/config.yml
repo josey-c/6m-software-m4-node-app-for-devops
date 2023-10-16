@@ -79,6 +79,9 @@ workflows:
       - test:
           requires:
             - build
+      - scan:
+          requires:
+            - build
       - build-and-push:
           filters:
             # branches:
@@ -88,6 +91,3 @@ workflows:
       # - deploy:
       #     requires:
       #       - build-and-push 
-      - scan:
-        requires:
-          - build
