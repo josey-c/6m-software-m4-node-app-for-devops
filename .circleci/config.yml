@@ -40,7 +40,7 @@ jobs:
       - docker/push:
           image: joseyc/node-app
           tag: << pipeline.git.tag >>
-   scan:
+  scan:
     docker:
       - image: cimg/node:16.10
     environment:
