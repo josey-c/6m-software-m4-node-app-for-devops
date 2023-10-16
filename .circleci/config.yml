@@ -26,7 +26,6 @@ jobs:
       - run: |
           echo “Running tests...”
           npm run test
-
   build-and-push:
     executor: docker/docker
     steps:
