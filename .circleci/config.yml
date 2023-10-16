@@ -3,6 +3,7 @@ orbs:
   node: circleci/node@5.0.1
   docker: circleci/docker@2.1.4 #To able to use docker commands
   heroku: circleci/heroku@2.0.0 #Allow us to use heroku orb's commands
+  snyk: snyk/snyk@1.5.0
 
 jobs:
   build:
@@ -39,21 +40,31 @@ jobs:
       - docker/push:
           image: joseyc/node-app
           tag: << pipeline.git.tag >>
-
-
-  deploy:
+   scan:
     docker:
       - image: cimg/node:16.10
+    environment:
+      IMAGE_NAME: joseyc/node-app
     steps:
-      - setup_remote_docker
-      - heroku/install
-      - checkout     
-      - run:
-          name: Heroku Container Push
-          command: |
-            heroku container:login
-            heroku container:push web -a joseyc-su-devops
-            heroku container:release web -a joseyc-su-devops
+      - checkout
+      - docker/check
+      - run: docker build -t $IMAGE_NAME .
+      - snyk/scan:
+          docker-image-name: $IMAGE_NAME
+
+  # deploy:
+  #   docker:
+  #     - image: cimg/node:16.10
+  #   steps:
+  #     - setup_remote_docker
+  #     - heroku/install
+  #     - checkout     
+  #     - run:
+  #         name: Heroku Container Push
+  #         command: |
+  #           heroku container:login
+  #           heroku container:push web -a joseyc-su-devops
+  #           heroku container:release web -a joseyc-su-devops
           # Push image to heroku's contaienr registry
           # Relese deploy image from heroku's container registry
 
@@ -74,6 +85,9 @@ workflows:
             #   ignore: /.*/ 
             tags:
               only: /.*/
-      - deploy:
-          requires:
-            - build-and-push 
+      # - deploy:
+      #     requires:
+      #       - build-and-push 
+      - scan:
+        requires:
+          - build
