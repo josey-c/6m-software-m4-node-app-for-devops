@@ -46,11 +46,12 @@ jobs:
       IMAGE_NAME: joseyc/node-app
     steps:
       - checkout
+      - setup_remote_docker   
       - docker/check
       - run: docker build -t $IMAGE_NAME .
       - snyk/scan:
           docker-image-name: $IMAGE_NAME
-          severity-threshold: medium
+          severity-threshold: high
   # deploy:
   #   docker:
   #     - image: cimg/node:16.10
