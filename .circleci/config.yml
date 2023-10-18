@@ -32,13 +32,13 @@ jobs:
       - setup_remote_docker
       - checkout
       - docker/check
-      - run: echo "<< pipeline.git.tag >>"
+      - run: echo "<<pipeline.git.tag>>"
       - docker/build:
           image: joseyc/node-app
-          tag: << pipeline.git.tag >>
+          tag: <<pipeline.git.tag>>
       - docker/push:
           image: joseyc/node-app
-          tag: << pipeline.git.tag >>
+          tag: <<pipeline.git.tag>>
   scan:
     docker:
       - image: cimg/node:16.10
@@ -81,13 +81,12 @@ workflows:
           requires:
             - build
       - build-and-push:
-          # requires:
-          #   - test
           filters:
-            branches:
-              ignore: /.*/ 
             tags:
               only: /^v.*/
+            branches:
+              ignore: /.*/ 
+
       # - deploy:
       #     requires:
       #       - build-and-push 
