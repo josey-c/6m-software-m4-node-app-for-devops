@@ -73,8 +73,7 @@ workflows:
       - build:
           filters:
               branches:
-                only:
-                  - main
+                only: main
       - test:
           requires:
             - build
@@ -82,13 +81,13 @@ workflows:
           requires:
             - build
       - build-and-push:
-          requires:
-            - test
+          # requires:
+          #   - test
           filters:
-            # branches:
-            #   ignore: /.*/ 
+            branches:
+              ignore: /.*/ 
             tags:
-              only: /.*/
+              only: /^v.*/
       # - deploy:
       #     requires:
       #       - build-and-push 
