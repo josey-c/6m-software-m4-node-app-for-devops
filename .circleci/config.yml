@@ -86,7 +86,6 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/ 
-
       # - deploy:
       #     requires:
       #       - build-and-push 
